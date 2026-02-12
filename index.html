@@ -174,45 +174,59 @@
   </footer>
 
   <script>
-    // Footer year
-    document.getElementById("year").textContent = new Date().getFullYear();
+  // Footer year
+  document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Placeholder submit handler (until Azure Function exists)
-    const form = document.getElementById("contactForm");
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
+  const form = document.getElementById("contactForm");
 
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const message = document.getElementById("message").value.trim();
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      if (!name || !email || !message) {
-        alert("Please fill out your name, email, and message.");
-        return;
-      }
+    // Gather values
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const date = document.getElementById("date").value;
+    const guests = document.getElementById("guests").value;
+    const message = document.getElementById("message").value.trim();
 
-      alert(
-        "Thanks! Your message is ready to send.\n\n"
-      );
+    // Basic validation
+    if (!name || !email || !message) {
+      alert("Please fill out your name, email, and message.");
+      return;
+    }
 
-      form.reset();
-    });
+    // Disable button while sending (prevents double submits)
+    const btn = form.querySelector('button[type="submit"]');
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Sending...";
 
-    /*
-      replace the submit handler with something like:
+    try {
+      // NOTE:
+      // If you're using Azure Static Web Apps with integrated Functions,
+      // this is usually just: "/api/contact"
+      const apiUrl = "/api/contact";
 
-      fetch("https://<your-function-url>/api/contact", {
+      const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          date: document.getElementById("date").value,
-          guests: document.getElementById("guests").value,
-          message
-        })
-      })
-    */
-  </script>
+        body: JSON.stringify({ name, email, date, guests, message })
+      });
+
+      if (!res.ok) {
+        throw new Error("Server returned " + res.status);
+      }
+
+      alert("Thanks! Your message has been sent.");
+      form.reset();
+    } catch (err) {
+      console.error(err);
+      alert("Sorry — something went wrong. Please try again in a moment.");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
+  });
+</script>
 </body>
 </html>
