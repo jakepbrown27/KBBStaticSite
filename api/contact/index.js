@@ -1,9 +1,9 @@
 const { app } = require("@azure/functions");
 
 app.http("contact", {
+  route: "contact",
   methods: ["POST", "OPTIONS"],
   authLevel: "anonymous",
-  route: "contact",
   handler: async (request, context) => {
     const cors = {
       "Access-Control-Allow-Origin": "*",
@@ -34,6 +34,7 @@ app.http("contact", {
 
     context.log("New inquiry:", { name, email, date, guests, message });
 
+    // Later: send email/SMS here
     return { status: 200, headers: cors, jsonBody: { ok: true } };
   }
 });
