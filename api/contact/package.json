@@ -1,9 +1,0 @@
-{
-  "name": "kbb-api",
-  "private": true,
-  "version": "1.0.0",
-  "type": "commonjs",
-  "dependencies": {
-    "@azure/functions": "^4.0.0"
-  }
-}

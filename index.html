@@ -205,13 +205,11 @@
       // NOTE:
       // If you're using Azure Static Web Apps with integrated Functions,
       // this is usually just: "/api/contact"
-      const apiUrl = "/api/contact";
-
-      const res = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, date, guests, message })
-      });
+        });
 
       if (!res.ok) {
         throw new Error("Server returned " + res.status);
