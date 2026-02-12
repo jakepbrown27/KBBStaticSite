@@ -6,319 +6,8 @@
   <title>Kelly Brown Bartending</title>
   <meta name="description" content="Kelly Brown Bartending — mobile bartending services, packages, and events." />
 
-  <style>
-    :root{
-      --bg: #07080c;
-      --panel: rgba(255,255,255,.06);
-      --panel2: rgba(255,255,255,.09);
-      --stroke: rgba(255,255,255,.14);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.72);
-      --accent: #7c3aed;   /* purple */
-      --accent2:#22c55e;   /* green */
-      --shadow: 0 18px 60px rgba(0,0,0,.55);
-      --radius: 18px;
-      --radius2: 26px;
-      --max: 1100px;
-    }
-
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color: var(--text);
-      background:
-        radial-gradient(900px 500px at 20% 0%, rgba(124,58,237,.25), transparent 55%),
-        radial-gradient(700px 420px at 80% 10%, rgba(34,197,94,.18), transparent 60%),
-        radial-gradient(800px 520px at 50% 90%, rgba(59,130,246,.12), transparent 60%),
-        linear-gradient(180deg, #05060a 0%, #07080c 40%, #05060a 100%);
-      line-height: 1.55;
-    }
-
-    a { color: inherit; }
-    .container{
-      width: min(var(--max), calc(100% - 40px));
-      margin: 0 auto;
-    }
-
-    /* Subtle animated grain / shimmer */
-    .noise{
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: .06;
-      mix-blend-mode: overlay;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
-    }
-
-    header{
-      padding: 56px 0 18px;
-    }
-
-    .nav{
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 14px 16px;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.04);
-      border-radius: var(--radius2);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
-    }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap: 10px;
-      font-weight: 700;
-      letter-spacing: .3px;
-      text-decoration:none;
-    }
-    .dot{
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      box-shadow: 0 0 0 6px rgba(124,58,237,.14);
-    }
-    .navlinks{
-      display:flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      justify-content:flex-end;
-    }
-    .navlinks a{
-      text-decoration:none;
-      color: var(--muted);
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      transition: all .2s ease;
-    }
-    .navlinks a:hover{
-      color: var(--text);
-      background: rgba(255,255,255,.06);
-      border-color: rgba(255,255,255,.10);
-    }
-
-    .hero{
-      padding: 34px 0 22px;
-      text-align:center;
-    }
-    h1{
-      margin: 20px auto 14px;
-      font-size: clamp(34px, 5vw, 56px);
-      line-height: 1.05;
-      letter-spacing: -0.6px;
-      font-weight: 800;
-    }
-    .sub{
-      margin: 0 auto 22px;
-      max-width: 740px;
-      color: var(--muted);
-      font-size: clamp(16px, 2.1vw, 18px);
-    }
-
-    .ctaRow{
-      display:flex;
-      justify-content:center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin: 18px 0 10px;
-    }
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap: 10px;
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      text-decoration:none;
-      transition: transform .12s ease, background .2s ease, border-color .2s ease;
-      box-shadow: 0 10px 28px rgba(0,0,0,.35);
-      will-change: transform;
-    }
-    .btn:hover{
-      transform: translateY(-1px);
-      background: rgba(255,255,255,.08);
-      border-color: rgba(255,255,255,.20);
-    }
-    .btn.primary{
-      border-color: rgba(124,58,237,.45);
-      background: linear-gradient(135deg, rgba(124,58,237,.75), rgba(34,197,94,.55));
-    }
-    .btn.primary:hover{
-      border-color: rgba(255,255,255,.28);
-    }
-
-    .section{
-      padding: 26px 0;
-    }
-
-    .card{
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.04);
-      border-radius: var(--radius2);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      overflow:hidden;
-    }
-    .cardInner{
-      padding: 22px;
-    }
-
-    .sectionTitle{
-      font-size: 20px;
-      font-weight: 750;
-      margin: 0 0 10px;
-      letter-spacing: .2px;
-    }
-    .muted{
-      color: var(--muted);
-      margin: 0;
-    }
-
-    /* Services grid: 3+ columns desktop, 1 column mobile */
-    .grid{
-      display:grid;
-      gap: 14px;
-      grid-template-columns: 1fr;
-      margin-top: 14px;
-    }
-    @media (min-width: 760px){
-      .grid{
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-
-    .service{
-      border: 1px solid rgba(255,255,255,.12);
-      background:
-        radial-gradient(400px 180px at 10% 0%, rgba(124,58,237,.16), transparent 55%),
-        radial-gradient(320px 180px at 90% 0%, rgba(34,197,94,.12), transparent 60%),
-        rgba(255,255,255,.035);
-      border-radius: var(--radius);
-      padding: 16px;
-      transition: transform .15s ease, border-color .2s ease, background .2s ease;
-      min-height: 150px;
-    }
-    .service:hover{
-      transform: translateY(-2px);
-      border-color: rgba(255,255,255,.20);
-      background:
-        radial-gradient(400px 180px at 10% 0%, rgba(124,58,237,.22), transparent 55%),
-        radial-gradient(320px 180px at 90% 0%, rgba(34,197,94,.16), transparent 60%),
-        rgba(255,255,255,.05);
-    }
-    .serviceTop{
-      display:flex;
-      align-items:flex-start;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .badge{
-      font-size: 12px;
-      color: rgba(255,255,255,.85);
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.25);
-      white-space: nowrap;
-    }
-    .service h3{
-      margin:0;
-      font-size: 16px;
-      font-weight: 750;
-      letter-spacing: .2px;
-    }
-    .service p{
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    /* Contact form */
-    form{
-      display:grid;
-      gap: 12px;
-      margin-top: 14px;
-    }
-    .row{
-      display:grid;
-      gap: 12px;
-      grid-template-columns: 1fr;
-    }
-    @media (min-width: 760px){
-      .row{ grid-template-columns: 1fr 1fr; }
-    }
-    label{
-      font-size: 12px;
-      color: rgba(255,255,255,.75);
-      display:block;
-      margin: 0 0 6px;
-    }
-    input, textarea{
-      width: 100%;
-      padding: 12px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.20);
-      color: var(--text);
-      outline: none;
-      transition: border-color .15s ease, background .15s ease;
-    }
-    input:focus, textarea:focus{
-      border-color: rgba(124,58,237,.55);
-      background: rgba(0,0,0,.28);
-    }
-    textarea{ min-height: 120px; resize: vertical; }
-
-    .formActions{
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 4px;
-    }
-    .hint{
-      color: rgba(255,255,255,.65);
-      font-size: 12px;
-    }
-    .submit{
-      cursor:pointer;
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 999px;
-      padding: 11px 14px;
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      transition: transform .12s ease, background .2s ease, border-color .2s ease;
-      box-shadow: 0 10px 28px rgba(0,0,0,.35);
-    }
-    .submit:hover{
-      transform: translateY(-1px);
-      background: rgba(255,255,255,.10);
-      border-color: rgba(255,255,255,.20);
-    }
-
-    footer{
-      padding: 26px 0 46px;
-      color: rgba(255,255,255,.55);
-      font-size: 13px;
-      text-align:center;
-    }
-
-    /* Accessibility: reduce motion */
-    @media (prefers-reduced-motion: reduce){
-      * { transition: none !important; scroll-behavior: auto !important; }
-    }
-  </style>
+  <!-- CSS -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
@@ -330,6 +19,7 @@
         <span class="dot" aria-hidden="true"></span>
         <span>Kelly Brown Bartending</span>
       </a>
+
       <div class="navlinks" aria-label="Primary navigation">
         <a href="#about">About</a>
         <a href="#services">Services</a>
@@ -376,10 +66,10 @@
           <div class="grid" role="list">
             <article class="service" role="listitem">
               <div class="serviceTop">
-                <h3>Classic Package</h3>
-                <span class="badge">Beer and Wine</span>
+                <h3>Beer & Wine Package</h3>
+                <span class="badge">Most popular</span>
               </div>
-              <p>Beer and wine service. Professional service and a clean bar setup.</p>
+              <p>Beer and wine with professional service and a clean bar setup.</p>
             </article>
 
             <article class="service" role="listitem">
@@ -387,7 +77,7 @@
                 <h3>Craft Cocktail Package</h3>
                 <span class="badge">Signature menu</span>
               </div>
-              <p>Custom cocktail menu with fresh ingredients, garnishes, and elevated presentation.</p>
+              <p>Custom cocktail menu with fresh ingredients, garnishes, and elevated presentation. Taste testing included.</p>
             </article>
 
             <article class="service" role="listitem">
@@ -395,14 +85,13 @@
                 <h3>Wedding Bar Service</h3>
                 <span class="badge">Weddings</span>
               </div>
-              <p>Ceremony-to-reception coverage with timeline coordination and optional champagne service.</p>
+              <p>Ceremony-to-reception coverage with timeline coordination and optional champagne service. Taste testing included.</p>
             </article>
 
             <article class="service" role="listitem">
               <div class="serviceTop">
                 <h3>Corporate Events</h3>
                 <span class="badge">Team Building</span>
-                <span class="badge">Gala</span>
               </div>
               <p>Polished service, branded menus (optional), and efficient flow for large guest counts.</p>
             </article>
@@ -411,7 +100,6 @@
               <div class="serviceTop">
                 <h3>Private Parties</h3>
                 <span class="badge">Birthdays</span>
-                <span class="badge">Quinceanera</span>
               </div>
               <p>Bring the bar to your backyard, home, or venue—fun, friendly, and fully managed.</p>
             </article>
@@ -443,6 +131,7 @@
                 <label for="name">Full name</label>
                 <input id="name" name="name" type="text" autocomplete="name" placeholder="Your name" required />
               </div>
+
               <div>
                 <label for="email">Email</label>
                 <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
@@ -454,6 +143,7 @@
                 <label for="date">Event date</label>
                 <input id="date" name="date" type="date" />
               </div>
+
               <div>
                 <label for="guests">Estimated guest count</label>
                 <input id="guests" name="guests" type="number" min="1" placeholder="e.g., 75" />
@@ -462,15 +152,22 @@
 
             <div>
               <label for="message">Message</label>
-              <textarea id="message" name="message" placeholder="Tell us the venue/location, package interest, hours needed, and any special requests." required></textarea>
+              <textarea
+                id="message"
+                name="message"
+                placeholder="Tell us the venue/location, package interest, hours needed, and any special requests."
+                required
+              ></textarea>
             </div>
 
             <div class="formActions">
-              <span class="hint" id="formHint">Tip: When your Azure Function is ready, we’ll wire this to POST to your endpoint.</span>
+              <span class="hint" id="formHint">
+                Tip: When your Azure Function is ready, we’ll wire this form to POST to your endpoint.
+              </span>
+
               <button class="submit" type="submit">Send message</button>
             </div>
           </form>
-
         </div>
       </div>
     </section>
@@ -489,7 +186,6 @@
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      // Minimal client-side "validation" for now
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const message = document.getElementById("message").value.trim();
@@ -504,7 +200,6 @@
         "Next step: wire this form to your Azure Function endpoint."
       );
 
-      // Optional: reset the form after the placeholder alert
       form.reset();
     });
 
@@ -515,14 +210,13 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name, email,
+          name,
+          email,
           date: document.getElementById("date").value,
           guests: document.getElementById("guests").value,
           message
         })
       })
-      .then(r => r.ok ? ... : ...)
-      .catch(...)
     */
   </script>
 </body>
