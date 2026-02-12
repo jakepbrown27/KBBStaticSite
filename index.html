@@ -61,7 +61,7 @@
       <div class="card">
         <div class="cardInner">
           <h2 class="sectionTitle">Services & Packages</h2>
-          <p class="muted">Pick a package or mix-and-match add-ons. We’ll tailor it to your event.</p>
+          <p class="muted">Here are some of the services that we offer. No matter the event, we can tailor it to your specific needs.</p>
 
           <div class="grid" role="list">
             <article class="service" role="listitem">
@@ -161,10 +161,6 @@
             </div>
 
             <div class="formActions">
-              <span class="hint" id="formHint">
-                Tip: When your Azure Function is ready, we’ll wire this form to POST to your endpoint.
-              </span>
-
               <button class="submit" type="submit">Send message</button>
             </div>
           </form>
@@ -197,14 +193,13 @@
 
       alert(
         "Thanks! Your message is ready to send.\n\n" +
-        "Next step: wire this form to your Azure Function endpoint."
       );
 
       form.reset();
     });
 
     /*
-      When your Azure Function is ready, replace the submit handler with something like:
+      replace the submit handler with something like:
 
       fetch("https://<your-function-url>/api/contact", {
         method: "POST",
