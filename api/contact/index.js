@@ -1,19 +1,39 @@
-module.exports = async function (context, req) {
-  try {
-    const { name, email, date, guests, message } = req.body || {};
+const { app } = require("@azure/functions");
 
-    if (!name || !email || !message) {
-      context.res = { status: 400, jsonBody: { error: "name, email, and message are required" } };
-      return;
+app.http("contact", {
+  methods: ["POST", "OPTIONS"],
+  authLevel: "anonymous",
+  route: "contact",
+  handler: async (request, context) => {
+    const cors = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST,OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type"
+    };
+
+    // Preflight
+    if (request.method === "OPTIONS") {
+      return { status: 204, headers: cors };
     }
 
-    // TODO: send notification (email/SMS) from here
-    // For now, just log it (you’ll see this in Function logs)
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return { status: 400, headers: cors, jsonBody: { ok: false, error: "Invalid JSON" } };
+    }
+
+    const { name, email, date, guests, message } = body || {};
+    if (!name || !email || !message) {
+      return {
+        status: 400,
+        headers: cors,
+        jsonBody: { ok: false, error: "name, email, and message are required" }
+      };
+    }
+
     context.log("New inquiry:", { name, email, date, guests, message });
 
-    context.res = { status: 200, jsonBody: { ok: true } };
-  } catch (e) {
-    context.log.error(e);
-    context.res = { status: 500, jsonBody: { error: "Server error" } };
+    return { status: 200, headers: cors, jsonBody: { ok: true } };
   }
-};
+});
