@@ -227,10 +227,8 @@ h1{
 .serviceTop{
   display:flex;
   align-items:flex-start;
-  justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 10px;
-
   flex-wrap: wrap;
 }
 
@@ -242,20 +240,18 @@ h1{
   border: 1px solid rgba(255,255,255,.14);
   background: rgba(0,0,0,.25);
   white-space: nowrap;
-  flex: 0 0 auto;
-  margin-top: 2px;
+
+  flex: 0 0 auto;   /* ✅ badges sit under and wrap nicely */
 }
 
-.service h3{
+.serviceTop h3{
   margin:0;
   font-size: 16px;
   font-weight: 750;
   letter-spacing: .2px;
 
-  flex: 1 1 auto;
-  min-width: 140px;
+  flex: 1 0 100%;   /* ✅ title always takes the full row */
 }
-
 
 .service p{
   margin: 0;
