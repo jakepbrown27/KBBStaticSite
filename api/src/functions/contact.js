@@ -16,7 +16,7 @@ app.http('contact', {
     // TODO later: send email/SMS here
     context.log('New inquiry:', body);
 
-const connectionString = "endpoint=https://kbbcommunicationservice.unitedstates.communication.azure.com/;accesskey=8TKY5R6rcrMqtsulNdLn6ZLSCrzSPQiQ2IyJWPp6paUQz1TNGHn3JQQJ99CBACULyCpt0EBwAAAAAZCSla8c";
+const connectionString =  process.env.ACS_CONNECTION_STRING;
 const client = new EmailClient(connectionString);
 
 async function main() {
