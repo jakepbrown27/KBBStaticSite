@@ -22,7 +22,7 @@ app.http("contact", {
       const emailMessage = {
         senderAddress: sender,
         content: {
-          subject: "New Contact Form Submission",
+          subject: "New contact form submission from" + body.name,
           plainText:
             "Name: " + body.name + "\n" +
             "Email: " + body.email + "\n\n" +
@@ -32,6 +32,7 @@ app.http("contact", {
             "<h2>New Contact Form Submission</h2>" +
             "<p><b>Name:</b> " + body.name + "</p>" +
             "<p><b>Email:</b> " + body.email + "</p>" +
+            "Event Date: " + body.eventDate + "\n" +
             "<p><b>Message:</b></p>" +
             "<pre>" + body.message + "</pre>" +
             "</body></html>",
