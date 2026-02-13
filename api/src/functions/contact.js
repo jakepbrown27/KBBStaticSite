@@ -12,8 +12,6 @@ app.http("contact", {
       return { status: 400, jsonBody: { ok: false, error: "name, email, message required" } };
     }
 
-    const { name, email, message } = body;
-
     const connectionString = process.env.ACS_CONNECTION_STRING;
     const sender = process.env.ACS_SENDER_ADDRESS;
     const to = process.env.CONTACT_TO_EMAIL;
@@ -21,62 +19,36 @@ app.http("contact", {
     const client = new EmailClient(connectionString);
 
     async function main() {
-      const subject = `New contact form submission from ${name}`;
-
-      const plainText =
-`New inquiry from your site:
-
-Name: ${name}
-Email: ${email}
-
-Message:
-${message}
-`;
-
-      const html = `
-<html>
-  <body style="font-family: Arial, sans-serif; line-height: 1.4;">
-    <h2>New inquiry from your site</h2>
-
-    <p><strong>Name:</strong> ${escapeHtml(name)}</p>
-    <p><strong>Email:</strong> <a href="mailto:${encodeAttr(email)}">${escapeHtml(email)}</a></p>
-
-    <p><strong>Message:</strong></p>
-    <pre style="white-space: pre-wrap; background:#f6f6f6; padding:12px; border-radius:6px;">${escapeHtml(message)}</pre>
-  </body>
-</html>`;
-
       const emailMessage = {
         senderAddress: sender,
-        content: { subject, plainText, html },
-        recipients: { to: [{ address: to }] },
-        // optional: makes replying go to the user
-        replyTo: [{ address: email }],
+        content: {
+          subject: "New Contact Form Submission",
+          plainText:
+            "Name: " + body.name + "\n" +
+            "Email: " + body.email + "\n\n" +
+            "Message:\n" + body.message + "\n",
+          html:
+            "<html><body>" +
+            "<h2>New Contact Form Submission</h2>" +
+            "<p><b>Name:</b> " + body.name + "</p>" +
+            "<p><b>Email:</b> " + body.email + "</p>" +
+            "<p><b>Message:</b></p>" +
+            "<pre>" + body.message + "</pre>" +
+            "</body></html>",
+        },
+        recipients: {
+          to: [{ address: to }],
+        },
       };
 
       const poller = await client.beginSend(emailMessage);
       const result = await poller.pollUntilDone();
-
-      context.log("Email send result:", result);
+      context.log("Send result:", result);
     }
 
-    // Keep your "works" behavior: don't await
-    main().catch((err) => context.log.error("Email send failed:", err?.message || err));
+    // DO NOT await (this is what makes your current one work)
+    main().catch((err) => context.log("Send failed:", err));
 
     return { status: 200, jsonBody: { ok: true } };
   },
 });
-
-function escapeHtml(str) {
-  return String(str)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
-// safer in attributes (mailto:)
-function encodeAttr(str) {
-  return encodeURIComponent(String(str)).replaceAll("%40", "@");
-}
