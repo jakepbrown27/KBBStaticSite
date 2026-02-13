@@ -1,50 +1,87 @@
-const { app } = require('@azure/functions');
+const { app } = require("@azure/functions");
 const { EmailClient } = require("@azure/communication-email");
-app.http('contact', {
-  methods: ['POST', 'OPTIONS'],
-  authLevel: 'anonymous',
+
+app.http("contact", {
+  methods: ["POST", "OPTIONS"],
+  authLevel: "anonymous",
   handler: async (request, context) => {
-    // Basic preflight support
-    if (request.method === 'OPTIONS') return { status: 204 };
+    // Preflight
+    if (request.method === "OPTIONS") return { status: 204 };
 
     const body = await request.json().catch(() => null);
     if (!body?.name || !body?.email || !body?.message) {
-      return { status: 400, jsonBody: { ok: false, error: 'name, email, message required' } };
+      return { status: 400, jsonBody: { ok: false, error: "name, email, message required" } };
     }
 
-    // TODO later: send email/SMS here
-    context.log('New inquiry:', body);
- //   
-const connectionString = "endpoint=https://kbbcommunicationservice.unitedstates.communication.azure.com/;accesskey=8TKY5R6rcrMqtsulNdLn6ZLSCrzSPQiQ2IyJWPp6paUQz1TNGHn3JQQJ99CBACULyCpt0EBwAAAAAZCSla8c";
-const client = new EmailClient(connectionString);
+    const { name, email, message } = body;
 
-async function main() {
-    const emailMessage = {
-        senderAddress: "DoNotReply@f8cede87-7ff6-448c-a09a-38290d6c22b3.azurecomm.net",
-        content: {
-            subject: "Test Email",
-            plainText: "Test Email",
-            html: `
-			<html>
-				<body>
-					<h1>
-						Test Email
-					</h1>
-				</body>
-			</html>`,
-        },
-        recipients: {
-            to: [{ address: "jakepbrown@gmail.com" }],
-        },
-        
-    };
+    // Use your env vars (match your screenshot)
+    const connectionString = process.env.ACS_CONNECTION_STRING;
+    const senderAddress = process.env.ACS_SENDER_ADDRESS;
+    const toAddress = process.env.CONTACT_TO_EMAIL;
 
-    const poller = await client.beginSend(emailMessage);
-    const result = await poller.pollUntilDone();
+    if (!connectionString || !senderAddress || !toAddress) {
+      context.log.error("Missing env vars. Need ACS_CONNECTION_STRING, ACS_SENDER_ADDRESS, CONTACT_TO_EMAIL");
+      return { status: 500, jsonBody: { ok: false, error: "Server not configured" } };
+    }
+
+    const client = new EmailClient(connectionString);
+
+    const subject = `New contact form submission from ${name}`;
+
+    const plainText =
+`New inquiry from your site:
+
+Name: ${name}
+Email: ${email}
+
+Message:
+${message}
+`;
+
+    const html = `
+<html>
+  <body style="font-family: Arial, sans-serif; line-height: 1.4;">
+    <h2>New inquiry from your site</h2>
+    <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+    <p><strong>Email:</strong> <a href="mailto:${encodeAttr(email)}">${escapeHtml(email)}</a></p>
+    <p><strong>Message:</strong></p>
+    <pre style="white-space: pre-wrap; background:#f6f6f6; padding:12px; border-radius:6px;">${escapeHtml(message)}</pre>
+  </body>
+</html>`;
+
+    try {
+      const emailMessage = {
+        senderAddress,
+        content: { subject, plainText, html },
+        recipients: { to: [{ address: toAddress }] },
+        // If supported in your SDK version, this is handy:
+        replyTo: [{ address: email }],
+      };
+
+      const poller = await client.beginSend(emailMessage);
+      const result = await poller.pollUntilDone();
+
+      context.log("Email send result:", result);
+      return { status: 200, jsonBody: { ok: true } };
+    } catch (err) {
+      context.log.error("Email send failed:", err);
+      return { status: 500, jsonBody: { ok: false, error: "Failed to send email" } };
+    }
+  },
+});
+
+// Simple escaping to avoid HTML injection in the email body
+function escapeHtml(str) {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
-main();
-
-    return { status: 200, jsonBody: { ok: true } };
-  }
-});
+// Safer for attributes like href/mailto
+function encodeAttr(str) {
+  return encodeURIComponent(String(str)).replaceAll("%40", "@");
+}
