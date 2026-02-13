@@ -122,7 +122,7 @@
         <div class="cardInner">
           <h2 class="sectionTitle">Contact</h2>
           <p class="muted">
-            Send event details and we’ll get back to you.
+            Send event details and we’ll get back to you. (Form submission is currently a placeholder until the Azure Function is ready.)
           </p>
 
           <form id="contactForm" novalidate>
@@ -202,26 +202,28 @@
     btn.textContent = "Sending...";
 
     try {
-        const res = await fetch('/api/contact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, date, guests, message })
+      // NOTE:
+      // If you're using Azure Static Web Apps with integrated Functions,
+      // this is usually just: "/api/contact"
+        await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, date, guests, message })
         });
 
-        if (!res.ok) {
-            throw new Error("Server returned " + res.status);
-        }
+      if (!res.ok) {
+        throw new Error("Server returned " + res.status);
+      }
 
-        alert("Thanks! Your message has been sent.");
-        form.reset();
-        } catch (err) {
-        console.error(err);
-        alert("Sorry — something went wrong. Please try again in a moment.");
-        } finally {
-        btn.disabled = false;
-        btn.textContent = originalText;
+      alert("Thanks! Your message has been sent.");
+      form.reset();
+    } catch (err) {
+      console.error(err);
+      alert("Sorry — something went wrong. Please try again in a moment.");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalText;
     }
-
   });
 </script>
 </body>
