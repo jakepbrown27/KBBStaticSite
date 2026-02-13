@@ -1,14 +1,12 @@
 const { app } = require("@azure/functions");
 const { EmailClient } = require("@azure/communication-email");
 
-// Optional: you do NOT need app.setup(...) for your scenario.
-// If you keep it, it should be in a central file; but simplest is to omit.
-
 app.http("contact", {
   route: "contact",
   methods: ["POST", "OPTIONS"],
   authLevel: "anonymous",
   handler: async (request, context) => {
+    // CORS (safe even if same-origin)
     const cors = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST,OPTIONS",
@@ -19,6 +17,7 @@ app.http("contact", {
       return { status: 204, headers: cors };
     }
 
+    // Parse JSON
     let body;
     try {
       body = await request.json();
@@ -40,20 +39,22 @@ app.http("contact", {
       };
     }
 
+    // Read config
     const conn = process.env.ACS_CONNECTION_STRING;
     const sender = process.env.ACS_SENDER_ADDRESS;
     const to = process.env.CONTACT_TO_EMAIL;
 
     if (!conn || !sender || !to) {
-      context.log.error("Missing env vars: ACS_CONNECTION_STRING / ACS_SENDER_ADDRESS / CONTACT_TO_EMAIL");
+      context.log.error("Missing env vars for ACS email.");
       return {
         status: 500,
         headers: cors,
-        jsonBody: { ok: false, error: "Server not configured for email." }
+        jsonBody: { ok: false, error: "Server email configuration missing." }
       };
     }
 
-    const subject = `New KBB inquiry: ${name}`;
+    // Compose email
+    const subject = `New inquiry — ${name}`;
     const plainText =
       `New inquiry received:\n\n` +
       `Name: ${name}\n` +
@@ -65,7 +66,6 @@ app.http("contact", {
     try {
       const client = new EmailClient(conn);
 
-      // beginSend returns a poller; awaiting beginSend is fine for fire-and-forget
       await client.beginSend({
         senderAddress: sender,
         recipients: { to: [{ address: to }] },
@@ -73,20 +73,19 @@ app.http("contact", {
         replyTo: [{ address: email }]
       });
 
-      context.log("Email queued via ACS for:", to);
+      context.log("ACS email send started.");
       return { status: 200, headers: cors, jsonBody: { ok: true } };
-  } catch (err) {
-  context.log.error("ACS email send failed:", err);
-  return {
-    status: 500,
-    headers: cors,
-    jsonBody: {
-      ok: false,
-      error: "Email send failed",
-      detail: err?.message || String(err)
+    } catch (err) {
+      context.log.error("ACS email send failed:", err);
+      return {
+        status: 500,
+        headers: cors,
+        jsonBody: {
+          ok: false,
+          error: "Email send failed",
+          detail: err?.message || String(err)
+        }
+      };
     }
-  };
-}
-
   }
 });
