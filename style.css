@@ -230,6 +230,8 @@ h1{
   justify-content: space-between;
   gap: 10px;
   margin-bottom: 10px;
+
+  flex-wrap: wrap;
 }
 
 .badge{
@@ -240,6 +242,8 @@ h1{
   border: 1px solid rgba(255,255,255,.14);
   background: rgba(0,0,0,.25);
   white-space: nowrap;
+  flex: 0 0 auto;
+  margin-top: 2px;
 }
 
 .service h3{
@@ -247,7 +251,11 @@ h1{
   font-size: 16px;
   font-weight: 750;
   letter-spacing: .2px;
+
+  flex: 1 1 auto;
+  min-width: 140px;
 }
+
 
 .service p{
   margin: 0;
@@ -343,26 +351,3 @@ footer{
   * { transition: none !important; scroll-behavior: auto !important; }
 }
 
-.serviceTop{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.badges{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  align-items:center;
-}
-
-/* Optional: keep badges visually compact */
-.badge{
-  display:inline-flex;
-  align-items:center;
-  padding:6px 10px;
-  border-radius:999px;
-  font-size:12px;
-  line-height:1;
-  white-space:nowrap;
-}
