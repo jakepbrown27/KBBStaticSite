@@ -174,43 +174,59 @@
   </footer>
 
   <script>
-  // Footer year
   document.getElementById("year").textContent = new Date().getFullYear();
-
   const form = document.getElementById("contactForm");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // Gather values
     const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
-    const date = document.getElementById("date").value;
-    const guests = document.getElementById("guests").value;
+    const date = document.getElementById("date").value;      // YYYY-MM-DD from type="date"
+    const guests = document.getElementById("guests").value;  // may be "" or "123"
     const message = document.getElementById("message").value.trim();
 
-    // Basic validation
     if (!name || !email || !message) {
       alert("Please fill out your name, email, and message.");
       return;
     }
 
-    // Disable button while sending (prevents double submits)
     const btn = form.querySelector('button[type="submit"]');
     const originalText = btn.textContent;
     btn.disabled = true;
     btn.textContent = "Sending...";
 
     try {
-        const res = await fetch('/api/contact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, date, guests, message })
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, date, guests, message }),
+      });
 
-        });
+      // Read response body (even for 400/500)
+      const contentType = res.headers.get("content-type") || "";
+      const data = contentType.includes("application/json")
+        ? await res.json().catch(() => null)
+        : await res.text().catch(() => null);
 
       if (!res.ok) {
-        throw new Error("Server returned " + res.status);
+        // Prefer server-provided message if present
+        const serverMsg =
+          (data && typeof data === "object" && (data.error || data.message)) ||
+          (typeof data === "string" && data) ||
+          `Server returned ${res.status}`;
+
+        // If you don't want to leak validation rules, keep this generic:
+        // alert("Please check your entries and try again.");
+        // Otherwise, show the server message:
+        alert(serverMsg);
+        return;
+      }
+
+      // Some of your responses are { ok: true }. Honor that too.
+      if (data && typeof data === "object" && data.ok === false) {
+        alert(data.error || "Please check your entries and try again.");
+        return;
       }
 
       alert("Thanks! Your message has been sent.");
