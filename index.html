@@ -1,228 +1,98 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kelly Brown Bartending</title>
-  <meta name="description" content="Kelly Brown Bartending — mobile bartending services, packages, and events." />
+const { app } = require("@azure/functions");
+const { EmailClient } = require("@azure/communication-email");
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="style.css" />
-</head>
+app.http("contact", {
+  methods: ["POST", "OPTIONS"],
+  authLevel: "anonymous",
+  handler: async (request, context) => {
+    if (request.method === "OPTIONS") return { status: 204 };
 
-<body>
-  <div class="noise" aria-hidden="true"></div>
-
-  <header class="container">
-    <nav class="nav">
-      <a class="brand" href="#top" aria-label="Kelly Brown Bartending home">
-        <span class="dot" aria-hidden="true"></span>
-        <span>Kelly Brown Bartending</span>
-      </a>
-
-      <div class="navlinks" aria-label="Primary navigation">
-        <a href="#about">About</a>
-        <a href="#services">Services</a>
-        <a href="#contact">Contact</a>
-      </div>
-    </nav>
-
-    <section class="hero" id="top">
-      <h1>Kelly Brown Bartending</h1>
-      <p class="sub">
-        Premium mobile bartending for weddings, private events, corporate gatherings, and everything in between.
-        Craft cocktails, great vibes, and a smooth experience end-to-end.
-      </p>
-
-      <div class="ctaRow">
-        <a class="btn primary" href="#contact">Get a quote</a>
-        <a class="btn" href="#services">View packages</a>
-      </div>
-    </section>
-  </header>
-
-  <main class="container">
-    <!-- About -->
-    <section class="section" id="about">
-      <div class="card">
-        <div class="cardInner">
-          <h2 class="sectionTitle">About Us</h2>
-          <p class="muted">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-            dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Services -->
-    <section class="section" id="services">
-      <div class="card">
-        <div class="cardInner">
-          <h2 class="sectionTitle">Services & Packages</h2>
-          <p class="muted">Here are some of the services that we offer. No matter the event, we can tailor it to your specific needs.</p>
-
-          <div class="grid" role="list">
-            <article class="service" role="listitem">
-              <div class="serviceTop">
-                <h3>Beer & Wine Package</h3>
-                <span class="badge">Most popular</span>
-              </div>
-              <p>Beer and wine with professional service and a clean bar setup.</p>
-            </article>
-
-            <article class="service" role="listitem">
-              <div class="serviceTop">
-                <h3>Craft Cocktail Package</h3>
-                <span class="badge">Signature menu</span>
-              </div>
-              <p>Custom cocktail menu with fresh ingredients, garnishes, and elevated presentation. Taste testing included.</p>
-            </article>
-
-            <article class="service" role="listitem">
-              <div class="serviceTop">
-                <h3>Wedding Bar Service</h3>
-                <span class="badge">Weddings</span>
-              </div>
-              <p>Ceremony-to-reception coverage with timeline coordination and optional champagne service. Taste testing included.</p>
-            </article>
-
-            <article class="service" role="listitem">
-              <div class="serviceTop">
-                <h3>Corporate Events</h3>
-                <span class="badge">Team Building</span>
-              </div>
-              <p>Polished service, branded menus (optional), and efficient flow for large guest counts.</p>
-            </article>
-
-            <article class="service" role="listitem">
-              <div class="serviceTop">
-                <h3>Private Parties</h3>
-                <span class="badge">Birthdays</span>
-              </div>
-              <p>Bring the bar to your backyard, home, or venue—fun, friendly, and fully managed.</p>
-            </article>
-
-            <article class="service" role="listitem">
-              <div class="serviceTop">
-                <h3>Add-ons</h3>
-                <span class="badge">Extras</span>
-              </div>
-              <p>Mocktail menu, specialty ice, themed garnish bar, glassware rental, and more.</p>
-            </article>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact -->
-    <section class="section" id="contact">
-      <div class="card">
-        <div class="cardInner">
-          <h2 class="sectionTitle">Contact</h2>
-          <p class="muted">
-            Send event details and we’ll get back to you. (Form submission is currently a placeholder until the Azure Function is ready.)
-          </p>
-
-          <form id="contactForm" novalidate>
-            <div class="row">
-              <div>
-                <label for="name">Full name</label>
-                <input id="name" name="name" type="text" autocomplete="name" placeholder="Your name" required />
-              </div>
-
-              <div>
-                <label for="email">Email</label>
-                <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
-              </div>
-            </div>
-
-            <div class="row">
-              <div>
-                <label for="date">Event date</label>
-                <input id="date" name="date" type="date" />
-              </div>
-
-              <div>
-                <label for="guests">Estimated guest count</label>
-                <input id="guests" name="guests" type="number" min="1" placeholder="e.g., 75" />
-              </div>
-            </div>
-
-            <div>
-              <label for="message">Message</label>
-              <textarea
-                id="message"
-                name="message"
-                placeholder="Tell us the venue/location, package interest, hours needed, and any special requests."
-                required
-              ></textarea>
-            </div>
-
-            <div class="formActions">
-              <button class="submit" type="submit">Send message</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="container">
-    © <span id="year"></span> Kelly Brown Bartending • Mobile Bartending Services
-  </footer>
-
-  <script>
-  // Footer year
-  document.getElementById("year").textContent = new Date().getFullYear();
-
-  const form = document.getElementById("contactForm");
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    // Gather values
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const date = document.getElementById("date").value;
-    const guests = document.getElementById("guests").value;
-    const message = document.getElementById("message").value.trim();
-
-    // Basic validation
-    if (!name || !email || !message) {
-      alert("Please fill out your name, email, and message.");
-      return;
+    const body = await request.json().catch(() => null);
+    if (!body?.name || !body?.email || !body?.message) {
+      return { status: 400, jsonBody: { ok: false, error: "Invalid input" } };
     }
 
-    // Disable button while sending (prevents double submits)
-    const btn = form.querySelector('button[type="submit"]');
-    const originalText = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = "Sending...";
-
-    try {
-        const res = await fetch('/api/contact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, date, guests, message })
-
-        });
-
-      if (!res.ok) {
-        throw new Error("Server returned " + res.status);
-      }
-
-      alert("Thanks! Your message has been sent.");
-      form.reset();
-    } catch (err) {
-      console.error(err);
-      alert("Sorry — something went wrong. Please try again in a moment.");
-    } finally {
-      btn.disabled = false;
-      btn.textContent = originalText;
+    // Email validation
+    const cleanedEmail = cleanEmail(body.email);
+    if (!cleanedEmail) {
+      return { status: 400, jsonBody: { ok: false, error: "Invalid input" } };
     }
-  });
-</script>
-</body>
-</html>
+    body.email = cleanedEmail;
+
+    // Guest count validation (name="guests" in your HTML)
+    const guests = cleanGuestCount(body.guests);
+    if (guests === null) {
+      return { status: 400, jsonBody: { ok: false, error: "Invalid input" } };
+    }
+    body.guests = guests;
+
+    const connectionString = process.env.ACS_CONNECTION_STRING;
+    const sender = process.env.ACS_SENDER_ADDRESS;
+    const to = process.env.CONTACT_TO_EMAIL;
+
+    const client = new EmailClient(connectionString);
+
+    async function main() {
+      const emailMessage = {
+        senderAddress: sender,
+        content: {
+          subject: "New contact form submission from " + body.name,
+          plainText:
+            "Name: " + body.name + "\n" +
+            "Email: " + body.email + "\n" +
+            "Event Date: " + (body.date || "") + "\n" +
+            "Estimated Guest Count: " + body.guests + "\n\n" +
+            "Message:\n" + body.message + "\n",
+
+          html:
+            "<html><body>" +
+            "<h2>New Contact Form Submission</h2>" +
+            "<p><b>Name:</b> " + body.name + "</p>" +
+            "<p><b>Email:</b> " + body.email + "</p>" +
+            "<p><b>Event Date:</b> " + (body.date || "") + "</p>" +
+            "<p><b>Estimated Guest Count:</b> " + body.guests + "</p>" +
+            "<p><b>Message:</b></p>" +
+            "<pre>" + body.message + "</pre>" +
+            "</body></html>",
+        },
+        recipients: {
+          to: [{ address: to }],
+        },
+      };
+
+      const poller = await client.beginSend(emailMessage);
+      const result = await poller.pollUntilDone();
+      context.log("Send result:", result);
+    }
+
+    main().catch((err) => context.log("Send failed:", err));
+
+    return { status: 200, jsonBody: { ok: true } };
+  },
+});
+
+function cleanEmail(value) {
+  if (typeof value !== "string") return null;
+  const s = value.trim().toLowerCase();
+  if (s.length < 6 || s.length > 254) return null;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s)) return null;
+  return s;
+}
+
+function cleanGuestCount(value) {
+  // Accept number or string
+  const s = String(value ?? "").trim();
+
+  // Must be digits only (no decimals, no signs, no letters)
+  if (!/^\d+$/.test(s)) return null;
+
+  const n = parseInt(s, 10);
+
+  // must be >= 1
+  if (!Number.isInteger(n) || n < 1) return null;
+
+  // optional: prevent insane values
+  if (n > 5000) return null;
+
+  return n;
+}
