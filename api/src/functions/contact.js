@@ -7,25 +7,6 @@ app.http("contact", {
   handler: async (request, context) => {
     if (request.method === "OPTIONS") return { status: 204 };
 
-    // 1) Validate env vars (DON'T log the values)
-    const requiredEnv = ["ACS_CONNECTION_STRING", "ACS_SENDER_ADDRESS", "CONTACT_TO_EMAIL"];
-    const missing = requiredEnv.filter((k) => !process.env[k] || !String(process.env[k]).trim());
-
-    context.log("ENV present:", {
-      ACS_CONNECTION_STRING: process.env.ACS_CONNECTION_STRING,
-      ACS_SENDER_ADDRESS: process.env.ACS_SENDER_ADDRESS,
-      CONTACT_TO_EMAIL: process.env.CONTACT_TO_EMAIL,
-    });
-
-    if (missing.length) {
-      context.log.error("Missing env vars:", missing);
-      return {
-        status: 500,
-        jsonBody: { ok: false, error: `Missing env vars: ${missing.join(", ")}` },
-      };
-    }
-
-    // 2) Parse request body
     const body = await request.json().catch(() => null);
     if (!body?.name || !body?.email || !body?.message) {
       return { status: 400, jsonBody: { ok: false, error: "name, email, message required" } };
@@ -33,39 +14,40 @@ app.http("contact", {
 
     const { name, email, message } = body;
 
-    // 3) Create client from env
-    const client = new EmailClient(process.env.ACS_CONNECTION_STRING);
+    const cs = process.env.ACS_CONNECTION_STRING;
+    const sender = process.env.ACS_SENDER_ADDRESS;
+    const to = process.env.CONTACT_TO_EMAIL;
 
-    const subject = `New contact form submission from ${name}`;
-    const plainText =
-`New inquiry from your site:
+    const client = new EmailClient(cs);
 
-Name: ${name}
-Email: ${email}
-
-Message:
-${message}
-`;
+    const emailMessage = {
+      senderAddress: sender,
+      content: {
+        subject: `New contact from ${name}`,
+        plainText: `Name: ${name}\nEmail: ${email}\n\n${message}`,
+      },
+      recipients: { to: [{ address: to }] },
+      replyTo: [{ address: email }],
+    };
 
     try {
-      const emailMessage = {
-        senderAddress: process.env.ACS_SENDER_ADDRESS,
-        content: { subject, plainText },
-        recipients: { to: [{ address: process.env.CONTACT_TO_EMAIL }] },
-        replyTo: [{ address: email }],
-      };
+      // IMPORTANT: await beginSend so we at least know ACS accepted the request
+      const poller = await client.beginSend(emailMessage);
 
-      // For debugging: await beginSend (fast) but don't pollUntilDone yet
-      const poller =  client.beginSend(emailMessage);
+      // Log operation id (useful for troubleshooting)
+      const opState = poller.getOperationState ? poller.getOperationState() : null;
+      context.log("ACS send started. operationId:", opState?.id || "(unknown)");
 
-      // Return quickly but confirm it started
-      return {
-        status: 202,
-        jsonBody: { ok: true, accepted: true },
-      };
+      // Background completion logging (may or may not finish depending on runtime)
+      poller.pollUntilDone()
+        .then((result) => context.log("ACS send completed:", result))
+        .catch((err) => context.log.error("ACS send failed:", err?.message || err));
+
+      return { status: 202, jsonBody: { ok: true } };
     } catch (err) {
-      context.log.error("ACS send failed:", err?.message || err, err?.stack);
-      return { status: 500, jsonBody: { ok: false, error: "ACS send failed" } };
+      // If you're not getting emails, THIS is the log you want to see
+      context.log.error("beginSend threw:", err?.message || err, err?.stack);
+      return { status: 500, jsonBody: { ok: false, error: "beginSend failed" } };
     }
   },
 });
