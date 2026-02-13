@@ -1,6 +1,9 @@
 const { app } = require("@azure/functions");
 const { EmailClient } = require("@azure/communication-email");
 
+app.setup({
+    enableHttpStream: true,
+});
 app.http("contact", {
   route: "contact",
   methods: ["POST", "OPTIONS"],
