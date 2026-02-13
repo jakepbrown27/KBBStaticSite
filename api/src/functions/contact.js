@@ -17,11 +17,13 @@ app.http('contact', {
     context.log('New inquiry:', body);
 
 const connectionString =  process.env.ACS_CONNECTION_STRING;
+const sender = process.env.ACS_SENDER_ADDRESS;
+const to = process.env.CONTACT_TO_EMAIL;
 const client = new EmailClient(connectionString);
 
 async function main() {
     const emailMessage = {
-        senderAddress: "DoNotReply@f8cede87-7ff6-448c-a09a-38290d6c22b3.azurecomm.net",
+        senderAddress: sender,
         content: {
             subject: "Test Email",
             plainText: "Hello world via email.",
@@ -35,7 +37,7 @@ async function main() {
 			</html>`,
         },
         recipients: {
-            to: [{ address: "jakepbrown@gmail.com" }],
+            to: [{ address: to }],
         },
         
     };
