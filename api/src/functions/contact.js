@@ -26,6 +26,13 @@ app.http("contact", {
     }
     body.guests = guests;
 
+    // Message sanitation (limit size, remove control chars)
+    const message = cleanMessage(body.message);
+    if (!message) {
+      return { status: 400, jsonBody: { ok: false, error: "Invalid input" } };
+    }
+    body.message = message;
+
     const connectionString = process.env.ACS_CONNECTION_STRING;
     const sender = process.env.ACS_SENDER_ADDRESS;
     const to = process.env.CONTACT_TO_EMAIL;
@@ -96,13 +103,6 @@ function cleanGuestCount(value) {
 
   return n;
 }
-
-// Message sanitation (limit size, remove control chars)
-const message = cleanMessage(body.message);
-if (!message) {
-  return { status: 400, jsonBody: { ok: false, error: "Invalid input" } };
-}
-body.message = message;
 
 function cleanMessage(value) {
   if (typeof value !== "string") return null;
