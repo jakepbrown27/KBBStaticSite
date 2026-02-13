@@ -59,8 +59,8 @@ ${message}
         replyTo: [{ address: email }],
       };
 
-      const poller = await client.beginSend(emailMessage);
-      const result = await poller.pollUntilDone();
+      const poller =  client.beginSend(emailMessage);
+      const result =  poller.pollUntilDone();
 
       context.log("Email send result:", result);
       return { status: 200, jsonBody: { ok: true } };
