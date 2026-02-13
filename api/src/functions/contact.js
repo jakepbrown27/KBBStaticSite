@@ -75,9 +75,18 @@ app.http("contact", {
 
       context.log("Email queued via ACS for:", to);
       return { status: 200, headers: cors, jsonBody: { ok: true } };
-    } catch (err) {
-      context.log.error("ACS email send failed:", err);
-      return { status: 500, headers: cors, jsonBody: { ok: false, error: "Email send failed." } };
+  } catch (err) {
+  context.log.error("ACS email send failed:", err);
+  return {
+    status: 500,
+    headers: cors,
+    jsonBody: {
+      ok: false,
+      error: "Email send failed",
+      detail: err?.message || String(err)
     }
+  };
+}
+
   }
 });
