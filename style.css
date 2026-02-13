@@ -342,3 +342,27 @@ footer{
 @media (prefers-reduced-motion: reduce){
   * { transition: none !important; scroll-behavior: auto !important; }
 }
+
+.serviceTop{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+}
+
+/* Optional: keep badges visually compact */
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  line-height:1;
+  white-space:nowrap;
+}
