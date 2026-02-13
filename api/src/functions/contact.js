@@ -12,9 +12,9 @@ app.http("contact", {
     const missing = requiredEnv.filter((k) => !process.env[k] || !String(process.env[k]).trim());
 
     context.log("ENV present:", {
-      ACS_CONNECTION_STRING: !!process.env.ACS_CONNECTION_STRING,
-      ACS_SENDER_ADDRESS: !!process.env.ACS_SENDER_ADDRESS,
-      CONTACT_TO_EMAIL: !!process.env.CONTACT_TO_EMAIL,
+      ACS_CONNECTION_STRING: process.env.ACS_CONNECTION_STRING,
+      ACS_SENDER_ADDRESS: process.env.ACS_SENDER_ADDRESS,
+      CONTACT_TO_EMAIL: process.env.CONTACT_TO_EMAIL,
     });
 
     if (missing.length) {
@@ -56,7 +56,7 @@ ${message}
       };
 
       // For debugging: await beginSend (fast) but don't pollUntilDone yet
-      const poller = await client.beginSend(emailMessage);
+      const poller =  client.beginSend(emailMessage);
 
       // Return quickly but confirm it started
       return {
