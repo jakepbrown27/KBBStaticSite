@@ -202,13 +202,11 @@
     btn.textContent = "Sending...";
 
     try {
-      // NOTE:
-      // If you're using Azure Static Web Apps with integrated Functions,
-      // this is usually just: "/api/contact"
-        await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, date, guests, message })
+        const res = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, date, guests, message })
+
         });
 
       if (!res.ok) {
