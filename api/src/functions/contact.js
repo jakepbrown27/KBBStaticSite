@@ -14,7 +14,36 @@ app.http('contact', {
 
     // TODO later: send email/SMS here
     context.log('New inquiry:', body);
-    
+ //   
+const connectionString = "endpoint=https://kbbcommunicationservice.unitedstates.communication.azure.com/;accesskey=8TKY5R6rcrMqtsulNdLn6ZLSCrzSPQiQ2IyJWPp6paUQz1TNGHn3JQQJ99CBACULyCpt0EBwAAAAAZCSla8c";
+const client = new EmailClient(connectionString);
+
+async function main() {
+    const emailMessage = {
+        senderAddress: "DoNotReply@f8cede87-7ff6-448c-a09a-38290d6c22b3.azurecomm.net",
+        content: {
+            subject: "Test Email",
+            plainText: "Test Email",
+            html: `
+			<html>
+				<body>
+					<h1>
+						Test Email
+					</h1>
+				</body>
+			</html>`,
+        },
+        recipients: {
+            to: [{ address: "jakepbrown@gmail.com" }],
+        },
+        
+    };
+
+    const poller = await client.beginSend(emailMessage);
+    const result = await poller.pollUntilDone();
+}
+
+main();
 
     return { status: 200, jsonBody: { ok: true } };
   }
