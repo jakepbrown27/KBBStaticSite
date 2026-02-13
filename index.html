@@ -202,28 +202,26 @@
     btn.textContent = "Sending...";
 
     try {
-      // NOTE:
-      // If you're using Azure Static Web Apps with integrated Functions,
-      // this is usually just: "/api/contact"
-        await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, date, guests, message })
+        const res = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, date, guests, message })
         });
 
-      if (!res.ok) {
-        throw new Error("Server returned " + res.status);
-      }
+        if (!res.ok) {
+            throw new Error("Server returned " + res.status);
+        }
 
-      alert("Thanks! Your message has been sent.");
-      form.reset();
-    } catch (err) {
-      console.error(err);
-      alert("Sorry — something went wrong. Please try again in a moment.");
-    } finally {
-      btn.disabled = false;
-      btn.textContent = originalText;
+        alert("Thanks! Your message has been sent.");
+        form.reset();
+        } catch (err) {
+        console.error(err);
+        alert("Sorry — something went wrong. Please try again in a moment.");
+        } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
     }
+
   });
 </script>
 </body>
