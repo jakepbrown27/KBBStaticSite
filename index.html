@@ -15,29 +15,29 @@
 
   <header class="container">
     <nav class="nav">
-        <a
-            class="brand"
-            href="https://www.instagram.com/kellybrownbartending/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Kelly Brown Bartending on Instagram"
-            >
+        <a class="brand" href="#top" aria-label="Kelly Brown Bartending home">
             <span class="dot" aria-hidden="true"></span>
             <span>Kelly Brown Bartending</span>
-
-            <img
-            class="igIcon"
-            src="images/512px-Instagram_icon.png"
-            alt="Instagram"
-            />
-
         </a>
+<div class="navlinks" aria-label="Primary navigation">
+  <a href="#about">About</a>
+  <a href="#services">Services</a>
+  <a href="#contact">Contact</a>
+</div>
 
+<!-- Mobile menu -->
+<div class="navmenu">
+  <button class="menuBtn" type="button" aria-expanded="false" aria-controls="menuList">
+    <span class="menuIcon" aria-hidden="true"></span>
+    <span class="srOnly">Open menu</span>
+  </button>
 
-      <div class="navlinks" aria-label="Primary navigation">
-        <a href="#about">About</a>
-        <a href="#services">Services</a>
-        <a href="#contact">Contact</a>
+  <div id="menuList" class="menuList" role="menu">
+    <a role="menuitem" href="#about">About</a>
+    <a role="menuitem" href="#services">Services</a>
+    <a role="menuitem" href="#contact">Contact</a>
+  </div>
+</div>
       </div>
     </nav>
 
@@ -255,5 +255,35 @@
     }
   });
 </script>
+
+<script>
+  const btn = document.querySelector(".menuBtn");
+  const list = document.querySelector(".menuList");
+
+  function closeMenu(){
+    list.classList.remove("open");
+    btn.setAttribute("aria-expanded", "false");
+  }
+
+  btn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isOpen = list.classList.toggle("open");
+    btn.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  // Close when clicking outside
+  document.addEventListener("click", closeMenu);
+
+  // Close after selecting a link
+  list?.querySelectorAll("a").forEach(a => {
+    a.addEventListener("click", closeMenu);
+  });
+
+  // Close on Escape
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeMenu();
+  });
+</script>
+
 </body>
 </html>
