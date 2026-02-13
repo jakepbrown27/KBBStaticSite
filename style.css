@@ -348,14 +348,14 @@ footer{
 }
 
 .igIcon{
-  width: 18px;
-  height: 18px;
-  margin-left: 10px;
-  opacity: .85;
-  flex: 0 0 auto;
-  fill: currentColor;
-  transition: opacity .2s ease, transform .12s ease;
+  width: 1.75em;
+  height: 1.75em;
+  object-fit: contain;
+  display: inline-block;
+  margin-left: .55em;
+  vertical-align: -0.12em;
 }
+
 
 .brand:hover .igIcon{
   opacity: 1;
