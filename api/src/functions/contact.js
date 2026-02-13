@@ -1,5 +1,5 @@
 const { app } = require('@azure/functions');
-
+const { EmailClient } = require("@azure/communication-email");
 app.http('contact', {
   methods: ['POST', 'OPTIONS'],
   authLevel: 'anonymous',
