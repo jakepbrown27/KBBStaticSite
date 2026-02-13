@@ -1,91 +1,20 @@
-const { app } = require("@azure/functions");
-const { EmailClient } = require("@azure/communication-email");
+const { app } = require('@azure/functions');
 
-app.http("contact", {
-  route: "contact",
-  methods: ["POST", "OPTIONS"],
-  authLevel: "anonymous",
+app.http('contact', {
+  methods: ['POST', 'OPTIONS'],
+  authLevel: 'anonymous',
   handler: async (request, context) => {
-    // CORS (safe even if same-origin)
-    const cors = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST,OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type"
-    };
+    // Basic preflight support
+    if (request.method === 'OPTIONS') return { status: 204 };
 
-    if (request.method === "OPTIONS") {
-      return { status: 204, headers: cors };
+    const body = await request.json().catch(() => null);
+    if (!body?.name || !body?.email || !body?.message) {
+      return { status: 400, jsonBody: { ok: false, error: 'name, email, message required' } };
     }
 
-    // Parse JSON
-    let body;
-    try {
-      body = await request.json();
-    } catch {
-      return { status: 400, headers: cors, jsonBody: { ok: false, error: "Invalid JSON" } };
-    }
+    // TODO later: send email/SMS here
+    context.log('New inquiry:', body);
 
-    const name = (body?.name || "").trim();
-    const email = (body?.email || "").trim();
-    const date = (body?.date || "").trim();
-    const guests = (body?.guests || "").toString().trim();
-    const message = (body?.message || "").trim();
-
-    if (!name || !email || !message) {
-      return {
-        status: 400,
-        headers: cors,
-        jsonBody: { ok: false, error: "name, email, and message are required" }
-      };
-    }
-
-    // Read config
-    const conn = process.env.ACS_CONNECTION_STRING;
-    const sender = process.env.ACS_SENDER_ADDRESS;
-    const to = process.env.CONTACT_TO_EMAIL;
-
-    if (!conn || !sender || !to) {
-      context.log.error("Missing env vars for ACS email.");
-      return {
-        status: 500,
-        headers: cors,
-        jsonBody: { ok: false, error: "Server email configuration missing." }
-      };
-    }
-
-    // Compose email
-    const subject = `New inquiry — ${name}`;
-    const plainText =
-      `New inquiry received:\n\n` +
-      `Name: ${name}\n` +
-      `Email: ${email}\n` +
-      `Event date: ${date || "(not provided)"}\n` +
-      `Guest count: ${guests || "(not provided)"}\n\n` +
-      `Message:\n${message}\n`;
-
-    try {
-      const client = new EmailClient(conn);
-
-      await client.beginSend({
-        senderAddress: sender,
-        recipients: { to: [{ address: to }] },
-        content: { subject, plainText },
-        replyTo: [{ address: email }]
-      });
-
-      context.log("ACS email send started.");
-      return { status: 200, headers: cors, jsonBody: { ok: true } };
-    } catch (err) {
-      context.log.error("ACS email send failed:", err);
-      return {
-        status: 500,
-        headers: cors,
-        jsonBody: {
-          ok: false,
-          error: "Email send failed",
-          detail: err?.message || String(err)
-        }
-      };
-    }
+    return { status: 200, jsonBody: { ok: true } };
   }
 });
