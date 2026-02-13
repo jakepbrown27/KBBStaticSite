@@ -124,7 +124,8 @@ function cleanEmail(value) {
 function cleanDate(value) {
   if (typeof value !== "string") return null;
 
-  const s = value.trim();
+  // remove ALL whitespace
+  const s = value.trim().replace(/\s+/g, "");
 
   // YYYY-MM-DD
   if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
@@ -137,6 +138,7 @@ function cleanDate(value) {
 
   return null;
 }
+
 
 function dateInAllowedRange(yyyyMmDd) {
   // Parse as local date (no timezone surprises)
