@@ -227,9 +227,9 @@ h1{
 .serviceTop{
   display:flex;
   align-items:flex-start;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 10px;
   margin-bottom: 10px;
-  flex-wrap: wrap;
 }
 
 .badge{
@@ -240,17 +240,13 @@ h1{
   border: 1px solid rgba(255,255,255,.14);
   background: rgba(0,0,0,.25);
   white-space: nowrap;
-
-  flex: 0 0 auto;   /* ✅ badges sit under and wrap nicely */
 }
 
-.serviceTop h3{
+.service h3{
   margin:0;
   font-size: 16px;
   font-weight: 750;
   letter-spacing: .2px;
-
-  flex: 1 0 100%;   /* ✅ title always takes the full row */
 }
 
 .service p{
@@ -347,17 +343,3 @@ footer{
   * { transition: none !important; scroll-behavior: auto !important; }
 }
 
-.igIcon{
-  width: 18px;
-  height: 18px;
-  margin-left: 10px;
-  opacity: .85;
-  flex: 0 0 auto;
-  fill: currentColor;
-  transition: opacity .2s ease, transform .12s ease;
-}
-
-.brand:hover .igIcon{
-  opacity: 1;
-  transform: translateY(-1px);
-}
