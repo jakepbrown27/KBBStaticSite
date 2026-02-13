@@ -15,27 +15,27 @@ app.http("contact", {
     // Email validation
     const cleanedEmail = cleanEmail(body.email);
     if (!cleanedEmail) {
-      return { status: 400, jsonBody: { ok: false, error: "Invalid input" } };
+      return { status: 400, jsonBody: { ok: false, error: "Invalid email input" } };
     }
     body.email = cleanedEmail;
 
     // Guest count validation (name="guests" in your HTML)
     const guests = cleanGuestCount(body.guests);
     if (guests === null) {
-      return { status: 400, jsonBody: { ok: false, error: "Invalid input" } };
+      return { status: 400, jsonBody: { ok: false, error: "Invalid input for guest count." } };
     }
     body.guests = guests;
 
     const date = cleanDate(body.date);
     if (!date) {
-      return { status: 400, jsonBody: { ok: false, error: "Invalid input" } };
+      return { status: 400, jsonBody: { ok: false, error: "Invalid Date." } };
     }
     body.date = date;
 
     // Message sanitation (limit size, remove control chars)
     const message = cleanMessage(body.message);
     if (!message) {
-      return { status: 400, jsonBody: { ok: false, error: "Invalid input" } };
+      return { status: 400, jsonBody: { ok: false, error: "Invalid message input, do not include any special characters" } };
     }
     body.message = message;
 
