@@ -12,42 +12,48 @@ app.http("contact", {
       return { status: 400, jsonBody: { ok: false, error: "name, email, message required" } };
     }
 
-    const { name, email, message } = body;
-
     const cs = process.env.ACS_CONNECTION_STRING;
     const sender = process.env.ACS_SENDER_ADDRESS;
     const to = process.env.CONTACT_TO_EMAIL;
 
-    const client = new EmailClient(cs);
-
-    const emailMessage = {
-      senderAddress: sender,
-      content: {
-        subject: `New contact from ${name}`,
-        plainText: `Name: ${name}\nEmail: ${email}\n\n${message}`,
-      },
-      recipients: { to: [{ address: to }] },
-      replyTo: [{ address: email }],
-    };
-
-    try {
-      // IMPORTANT: await beginSend so we at least know ACS accepted the request
-      const poller = await client.beginSend(emailMessage);
-
-      // Log operation id (useful for troubleshooting)
-      const opState = poller.getOperationState ? poller.getOperationState() : null;
-      context.log("ACS send started. operationId:", opState?.id || "(unknown)");
-
-      // Background completion logging (may or may not finish depending on runtime)
-      poller.pollUntilDone()
-        .then((result) => context.log("ACS send completed:", result))
-        .catch((err) => context.log.error("ACS send failed:", err?.message || err));
-
-      return { status: 202, jsonBody: { ok: true } };
-    } catch (err) {
-      // If you're not getting emails, THIS is the log you want to see
-      context.log.error("beginSend threw:", err?.message || err, err?.stack);
-      return { status: 500, jsonBody: { ok: false, error: "beginSend failed" } };
+    if (!cs || !sender || !to) {
+      context.log.error("Missing env vars", {
+        ACS_CONNECTION_STRING: !!cs,
+        ACS_SENDER_ADDRESS: !!sender,
+        CONTACT_TO_EMAIL: !!to,
+      });
+      return { status: 500, jsonBody: { ok: false, error: "Server not configured" } };
     }
+
+    // Respond to the browser immediately
+    const response = { status: 202, jsonBody: { ok: true } };
+
+    // Kick off the send in the background
+    try {
+      const client = new EmailClient(cs);
+      const { name, email, message } = body;
+
+      const emailMessage = {
+        senderAddress: sender,
+        content: {
+          subject: `New contact form submission from ${name}`,
+          plainText: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n`,
+        },
+        recipients: { to: [{ address: to }] },
+        // replyTo is fine to include; if your SDK/runtime doesn’t like it, remove it
+        replyTo: [{ address: email }],
+      };
+
+      // IMPORTANT: no await
+      client.beginSend(emailMessage)
+        .then(poller => poller.pollUntilDone())
+        .then(result => context.log("Email sent:", result))
+        .catch(err => context.log.error("Email send failed:", err?.message || err));
+    } catch (err) {
+      context.log.error("Failed to start email send:", err?.message || err);
+      // still return 202 because the request already "accepted"
+    }
+
+    return response;
   },
 });
