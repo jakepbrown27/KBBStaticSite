@@ -27,14 +27,7 @@ async function main() {
         content: {
             subject: "Test Email",
             plainText: "Hello world via email.",
-            html: `
-			<html>
-				<body>
-					<h1>
-						Hello world via email.
-					</h1>
-				</body>
-			</html>`,
+            html: body,
         },
         recipients: {
             to: [{ address: to }],
