@@ -103,8 +103,47 @@ header{
 
 .hero{
   padding: 34px 0 22px;
-  text-align:center;
 }
+
+/* This block is the centered anchor */
+.heroWrap{
+  position: relative;
+  max-width: 740px;   /* same as your sub max width */
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Your centered content */
+.heroText h1{
+  margin: 20px auto 14px;
+}
+
+.heroText .sub{
+  margin: 0 auto 22px;
+}
+
+/* Icon hangs off the left side of the centered text block */
+.heroIcon{
+  position: absolute;
+  left: -210px;     /* controls how far left it sits */
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 170px;
+  height: auto;
+}
+
+/* On mobile: stop hanging left, stack it above */
+@media (max-width: 900px){
+  .heroIcon{
+    position: static;
+    transform: none;
+    display: block;
+    margin: 0 auto 18px;
+    width: 140px;
+  }
+}
+
 
 h1{
   margin: 20px auto 14px;
