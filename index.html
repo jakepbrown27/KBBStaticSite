@@ -19,26 +19,25 @@
             <span class="dot" aria-hidden="true"></span>
             <span>Kelly Brown Bartending</span>
         </a>
-<div class="navlinks" aria-label="Primary navigation">
-  <a href="#about">About</a>
-  <a href="#services">Services</a>
-  <a href="#contact">Contact</a>
-</div>
+    <div class="navlinks" aria-label="Primary navigation">
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#contact">Contact</a>
+    </div>
 
-<!-- Mobile menu -->
-<div class="navmenu">
-  <button class="menuBtn" type="button" aria-expanded="false" aria-controls="menuList">
-    <span class="menuIcon" aria-hidden="true"></span>
-    <span class="srOnly">Open menu</span>
-  </button>
+    <!-- Mobile menu -->
+    <div class="navmenu">
+    <button class="menuBtn" type="button" aria-expanded="false" aria-controls="menuList">
+        <span class="menuIcon" aria-hidden="true"></span>
+        <span class="srOnly">Open menu</span>
+    </button>
 
-  <div id="menuList" class="menuList" role="menu">
-    <a role="menuitem" href="#about">About</a>
-    <a role="menuitem" href="#services">Services</a>
-    <a role="menuitem" href="#contact">Contact</a>
-  </div>
-</div>
-      </div>
+        <div id="menuList" class="menuList" role="menu">
+            <a role="menuitem" href="#about">About</a>
+            <a role="menuitem" href="#services">Services</a>
+            <a role="menuitem" href="#contact">Contact</a>
+        </div>
+    </div>
     </nav>
 
 <section class="hero" id="top">
@@ -52,7 +51,6 @@
         Premium mobile bartending for weddings, private events, corporate gatherings, and everything in between.
         Craft cocktails, great vibes, and a smooth experience end-to-end.
       </p>
-
       <div class="ctaRow">
         <a class="btn primary" href="#contact">Get a quote</a>
         <a class="btn" href="#services">View packages</a>
@@ -282,12 +280,23 @@
   // Close when clicking outside
   document.addEventListener("click", closeMenu);
 
-  // Close after selecting a link
+  // Close after selecting a link (and then navigate)
   list?.querySelectorAll("a").forEach(a => {
-    a.addEventListener("click", closeMenu);
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const href = a.getAttribute("href"); // "#about", "#services", "#contact"
+      closeMenu();
+
+      // Navigate after the menu is closed
+      requestAnimationFrame(() => {
+        document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+        history.pushState(null, "", href);
+      });
+    });
   });
 
-  // Close on Escape
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeMenu();
   });
