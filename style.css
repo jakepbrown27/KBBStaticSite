@@ -502,3 +502,14 @@ footer{
   .navlinks{ display:none; }
   .navmenu{ display:block; }
 }
+
+/* Make sure the nav sits above the hero on mobile */
+.nav{
+  position: relative;
+  z-index: 1000;
+}
+
+/* Keep the dropdown above all header content */
+.menuList{
+  z-index: 2000;
+}
