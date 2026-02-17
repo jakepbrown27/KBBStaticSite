@@ -513,3 +513,9 @@ footer{
 .menuList{
   z-index: 2000;
 }
+#about .muted + .muted{
+  margin-top: 14px;
+}
+.cardInner p + p{
+  margin-top: 14px;
+}
